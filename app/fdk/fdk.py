@@ -5,6 +5,7 @@ from app.fdk.webhook_handlers import WebhookHandlers
 
 from fdk_extension import setup_fdk
 from fdk_extension.extension import FdkExtensionClient
+from fdk_extension.storage.redis_storage import RedisStorage
 
 
 def get_extension_client() -> FdkExtensionClient:
@@ -25,32 +26,32 @@ def get_extension_client() -> FdkExtensionClient:
             "auth": extension_handlers.auth,
             "uninstall": extension_handlers.uninstall
         },
-        "storage": redis_client,
+        "storage": RedisStorage(redis_client, prefix_key="extension-python-vue"),
         "access_mode": "offline",
         "cluster": CONFIG.EXTENSION_CLUSTER_URL,
-        "webhook_config": {
-            "api_path": "/webhook",
-            "notification_email": "test2@abc.com",
-            "subscribed_saleschannel": 'specific',
-            "event_map": { 
-                'application/coupon/update': {
-                    "version": '1',
-                    "handler": webhook_handlers.handle_coupon_edit
-                },
-                'company/location/update': {
-                    "version": '1',
-                    "handler": webhook_handlers.handle_location_event
-                },
-                'company/product/create': {
-                    "version": '1',
-                    "handler": webhook_handlers.handle_product_event
-                },
-                'application/product/create': {
-                    "version": '1',
-                    "handler": webhook_handlers.handle_sales_channel_product_event
-                }
-            }
-        }
+        # "webhook_config": {
+        #     "api_path": "/webhook",
+        #     "notification_email": "test2@abc.com",
+        #     "subscribed_saleschannel": 'specific',
+        #     "event_map": { 
+        #         'application/coupon/update': {
+        #             "version": '1',
+        #             "handler": webhook_handlers.handle_coupon_edit
+        #         },
+        #         'company/location/update': {
+        #             "version": '1',
+        #             "handler": webhook_handlers.handle_location_event
+        #         },
+        #         'company/product/create': {
+        #             "version": '1',
+        #             "handler": webhook_handlers.handle_product_event
+        #         },
+        #         'application/product/create': {
+        #             "version": '1',
+        #             "handler": webhook_handlers.handle_sales_channel_product_event
+        #         }
+        #     }
+        # }
     })
 
     print("Extension Initiated..!")
