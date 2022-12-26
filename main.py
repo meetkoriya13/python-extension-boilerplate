@@ -22,16 +22,13 @@ def create_app() -> Sanic:
     # health apis
     app.blueprint(health_bp)
 
-    # Add your Routes here
-    app.blueprint(fdk_extension_client.fdk_route)
-
+    # Add your application routes into platform apis
     from app.urls.application import app_bp
-    # Add your Middlewares here
-    app_bp.middleware(session_middleware, "request")
-    app_bp.middleware(platform_api_on_request, "request")
+    fdk_extension_client.platform_api_routes.append(app_bp)
 
     # Register your routes here
-    app.blueprint(app_bp)
+    app.blueprint(fdk_extension_client.fdk_route)
+    app.blueprint(fdk_extension_client.platform_api_routes)
 
 
     # # Redirect routes
